@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LegAnimator : MonoBehaviour
 {
+    private const float frameRate = 60;
+    private float frameTime;
     [SerializeField] bool useAltSolution;
     [SerializeField] LegJoint legJoint;
     GameObject floatingDesiredPosition;
@@ -17,6 +19,8 @@ public class LegAnimator : MonoBehaviour
     Vector3 currentPosition = new Vector3();
 
     void Start() {
+        frameTime = 1 / frameRate;
+
         floatingDesiredPosition = legJoint.floatingDesiredPosition;
         hipPivot = legJoint.pivot;
 
@@ -36,9 +40,20 @@ public class LegAnimator : MonoBehaviour
         }
 
         if((currentPosition - desiredPosition).magnitude > stepDistanceThreshold)
-            currentPosition = desiredPosition; // move the foot if the desired position is far to current position, or we have an invalid position
+            // currentPosition = desiredPosition; // move the foot if the desired position is far to current position, or we have an invalid position
+            StartCoroutine(MoveFootToDesiredPosition(0.1f));
 
         DoInverseKinematics();
+    }
+
+    IEnumerator MoveFootToDesiredPosition(float stepTime) {
+        int numFrames = (int) (stepTime / frameTime);
+        Vector3 deltaPosition = desiredPosition - currentPosition;
+        Vector3 originalPosition = currentPosition;
+        for(int i = 0; i < numFrames; i++) {
+            currentPosition = originalPosition + (i+1) * deltaPosition / numFrames;
+            yield return new WaitForSeconds(frameTime);
+        }
     }
 
     void DoInverseKinematics() {

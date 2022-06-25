@@ -240,7 +240,7 @@ MonoBehaviour:
   legJoint: {fileID: 0}
   legSegment1: {fileID: 5212184439400390337}
   legSegment2: {fileID: 5212184438257135956}
-  stepDistanceThreshold: 0.3
+  stepDistanceThreshold: 0.9
   floatingStartPosition: {fileID: 4494637895419828418}
 --- !u!1 &5212184439400390337
 GameObject:
